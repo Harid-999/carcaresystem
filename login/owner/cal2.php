@@ -4,7 +4,7 @@ if($_SESSION["permission"] != '1'){
   Header("Location: ../");
 }
 $menu = "Cal";
-
+include_once('functions.php');
 
 ?>
 
@@ -13,7 +13,7 @@ $menu = "Cal";
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
-        <h1><i class="nav-icon fas fa-car"></i> รายรับประจำ (Income)</h1>
+        <h1><i class="nav-icon fas fa-money-check-alt"></i> รายรับประจำ (Income)</h1>
       </div><!-- /.container-fluid -->
     </section>
 
@@ -50,21 +50,26 @@ $menu = "Cal";
               </thead>
               <tbody>
               <?php
-                include('functions.php');
-                $fetchcalMonthPerYear = new DB_con(); 
-                $i = 0 ;
-                $sql = $fetchcalMonthPerYear->calMonthPerYear();   
+
+                $fetchcalDay1 = new DB_con(); 
+                $no = 0;
+                $sql = $fetchcalDay1->calMonthPerYear();   
                 while($row=mysqli_fetch_array($sql)){
-                  $i ++ ;
-              ?>
+                  $no++;
+                ?>
                 <tr>
-                   <td><?php echo $i; ?></td>
-                  <td><?php echo $row['monthPerYear']; ?></td>
+                  <td><?php echo $no ?></td>
+                  <td><?php echo $row['MonthPerYear']; ?></td>
                   <td><?php echo $row['income']; ?></td>
-                  
-                  
+
+                  <!-- fa-commenting  -->
+                  <!-- fa-info-circle  -->
+                  <!-- fa-spinner fa-pulse -->
+                  <!-- fa fa-check -->
+
+
                 </tr>
-              <?php } ?>
+                <?php } ?>
               </tbody>
             </table>
             

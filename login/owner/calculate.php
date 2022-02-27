@@ -3,7 +3,7 @@ session_start();
 if($_SESSION["permission"] != '1'){
   Header("Location: ../");
 }
-$menu = "Services";
+$menu = "Cal";
 
 
 ?>
@@ -13,7 +13,7 @@ $menu = "Services";
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
-        <h1><i class="nav-icon fas fa-car"></i> บริการ (Services)</h1>
+        <h1><i class="nav-icon fas fa-money-check-alt"></i> รายรับประจำ (Income)</h1>
       </div><!-- /.container-fluid -->
     </section>
 
@@ -23,7 +23,7 @@ $menu = "Services";
       <div class="container-fluid">
         <div class="card card-primary card-outline">
           <div class="card-header">
-            <h3 class="card-title">แพ็กเกจ (Packages) </h3>
+            <h3 class="card-title">รายได้ประจำเดือน/ปี</h3>
           </div>
           <div class="card-body">
             <!-- <p>แพ็กเกจล้างรถปัจจุบัน 2565</p> -->
@@ -35,39 +35,33 @@ $menu = "Services";
             </div> -->
 
         <div class="row">
-          <div class="col-md-5">
+          <div class="col-md-12">
             <table class="table table-bordered " role="grid">
               <thead>
                 <tr role="row" class="info">
                   <!-- <th  tabindex="0" rowspan="1" colspan="1" style="width: 7%;">ลำดับ</th> -->
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">หมายเลขแพ็กเกจ</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 20%;">ชื่อแพ็กเกจ</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">ราคา/บาท</th>
-                   <th align="center" tabindex="0" rowspan="1" colspan="1" style="width: 20%;">แก้ไขแพ็กเกจ</th>
-                  <!--<th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">Management</th> -->
+                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">ลำดับ</th>
+                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 20%;">เดือน/ปี</th>
+                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">รายได้ประจำเดือน/ปี</th>
+                  <!-- <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">วันที่เพิ่มเข้าสู่ระบบ</th>
+                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">Management</th> -->
                   
                 </tr>
               </thead>
               <tbody>
               <?php
                 include('functions.php');
-                $fetchPackages = new DB_con(); 
-                $sql = $fetchPackages->fetchPackages();   
+                $fetch1 = new DB_con(); 
+                $sql = $fetch1->calMonthPerYear(); 
+                $number = 0;  
                 while($row=mysqli_fetch_array($sql)){
+                  $number ++;
               ?>
                 <tr>
-                  <td><?php echo $row['package_id']; ?></td>
-                  <td><?php echo $row['package_name']; ?></td>
-                  <td><?php echo $row['package_price']; ?></td>
-                  <td>
-                    <a class="btn btn-warning btn-sm" href="packageUpdate.php?package_id=<?php echo $row['package_id'] ?>">
-                        <i class="fas fa-pencil-alt">
-                        </i>
-                    </a>
-                  </td>
-
-                  <!-- <td><?php echo $row['created']; ?></td> -->
-             
+                  <td><?php echo "$number";?></td>
+                  <td><?php echo $row['MonthPerYear']; ?></td>
+                  <td><?php echo $row['income']; ?></td>
+     
                   <!-- <td>
                     <a class="btn btn-warning btn-ls" href="updateEmployee.php?id=<?php echo $row['id']?>">
                       <i class="fas fa-pencil-alt">
@@ -99,7 +93,7 @@ $menu = "Services";
         <div class="card card-primary card-outline">
 
           <div class="card-header">
-            <h3 class="card-title">รายการจอง (Booking)</h3>
+            <h3 class="card-title">รายได้ประจำวัน</h3>
           </div> 
 
           <div class="card-body">
@@ -109,59 +103,32 @@ $menu = "Services";
             <table class="table table-bordered " role="grid">
               <thead>
                 <tr role="row" class="info">
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 5%;">ลำดับ</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 15%;">ชื่อ-นามสกุล ลูกค้า</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 15%;">เบอร์โทรลูกค้า</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 15%;">วันที่จอง</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 15%;">ลำดับคิว/ช่วงเวลาที่จอง</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 15%;">แพ็กเกจ</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 15%;">สถานะการจอง</th>
-                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 20%;">Management</th>
+                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">ลำดับ</th>
+                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 20%;">วันที่</th>
+                  <th  tabindex="0" rowspan="1" colspan="1" style="width: 10%;">รายได้ประจำวัน</th>
                   
                 </tr>
               </thead>
               <tbody>
               <?php
-                // include('functions.php');
-                $fetchBooking = new DB_con(); 
+                
+                $fetch = new DB_con(); 
                 $no = 0;
-                $sql = $fetchBooking->fetchBooking();   
+                $sql = $fetch->calDay();   
                 while($row=mysqli_fetch_array($sql)){
                   $no++;
               ?>
                 <tr>
-                  <td><?php echo /*$row['booking_id'];*/$no ?></td>
-                  <td><?php echo $row['name']; ?></td>
-                  <td><?php echo $row['tel']; ?></td>
-                  <td><?php echo $row['booking_date']; ?></td>
-                  <td><?php echo $row['time_id']; ?></td>
-                  <td><?php echo $row['packageName'].' '.$row['packagePrice']. ' บาท'; ?></td>
-                  <td><?php echo $row['booking_status']; ?></td>
+                  <td><?php echo $no ?></td>
+                  <td><?php echo $row['date']; ?></td>
+                  <td><?php echo $row['income']; ?></td>
+
                   
                   <!-- fa-commenting  -->
                   <!-- fa-info-circle  -->
                   <!-- fa-spinner fa-pulse -->
                   <!-- fa fa-check -->
-                  <td>
-
-                  <!-- <a class="btn btn-info btn-sm" href="#update.php?id=<?php echo $row['id']?>">
-                      <i class="fas fa-commenting-alt">
-                      </i>
-                    </a> -->
-
-                    <a class="btn btn-warning btn-sm" href="servicesUpdate.php?booking_id=<?php echo $row['booking_id'] ?>">
-                      <i class="fas fa-pencil-alt">
-                      </i>
-                    </a>
-
-                    <a class="btn btn-danger btn-sm" href="deleteServices.php?booking_id=<?php echo $row['booking_id'] ?> ">
-                      <i class="fas fa-trash-alt">
-                      </i>
-                    </a>
-
-                  </td>
-              
-           
+                 
 
                 </tr>
               <?php } ?>

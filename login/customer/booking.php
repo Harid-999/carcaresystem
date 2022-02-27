@@ -104,8 +104,8 @@
                         
                         <?php
                         // include('functions.php');
-                        $checkMax = new DB_con();
-                        $QuerycheckMax = $checkMax->checkMax(isset($_GET['dateWash']));  
+                        $ObjectDB = new DB_con();
+                        $QuerycheckMax = $ObjectDB->checkMax(isset($_GET['dateWash']));  
                             while($row=mysqli_fetch_array($QuerycheckMax)){ 
                         ?>
                         <!-- <input type="text" class="form-control" name="email" placeholder="Enter ..." required> -->
@@ -134,25 +134,30 @@
                     </select>
                     </div>
                   </div>
-                  <!-- <div class="form-group">
-                    <label class="col-form-label" >นามสกุล (Lastname)</label>
-                    <input type="text" class="form-control" id="inputWarning" name="Lastname" placeholder="Enter ..." required>
-                  </div> -->
+                  <?php 
+                    $QueryPackage = $ObjectDB->Package();
+                    $packageName = array();
+                    $i=0;
+                    while($row=mysqli_fetch_array($QueryPackage)){ 
+                      $packageName[$i] = $row['package_name'];
+                      $i++;
+                    }
+                    ?>
+                 
                   <div class="form-group">
                     <label class="col-form-label" >เลือกแพ็กเกจบริการ</label>
-                    <!-- <input type="text" class="form-control" id="inputError" name="tel" placeholder="Enter ..." required> -->
                     <div class="col-4">
                     <select name="package_id" id="" class="form-control select2">
                         <option value="" selected>-- เลือกแพ็กเกจบริการ --</option>
-                        <option value="1" >รถเก๋ง 200 บาท</option>
-                        <option value="2" >รถกระบะ 2 ประตู 220 บาท</option>
-                        <option value="3" >รถกระบะ 4 ประตู 250 บาท</option>
-                        <option value="4" >รถตู้ 300 บาท</option>
+                        <option value="1" ><?php echo $packageName[0]; ?></option>
+                        <option value="2" ><?php echo $packageName[1]; ?></option>
+                        <option value="3" ><?php echo $packageName[2]; ?></option>
+                        <option value="4" ><?php echo $packageName[3]; ?></option>
                     </select>
                     </div>
                   </div>
                   <!--END 3 -->
-                              
+                   <?php  ?>           
                   <!-- Is Admin:  <input type="checkbox" name="permission" id="myCheck" onclick="myFunction()"> -->
                   <!-- <p id="textAdmin" style="display:none">Aamin is CHECKED!</p> -->
                   <!-- <input type="text" class="form-control" id="textAdmin" style="display:none" name ="mb" placeholder="ยืนยันรหัสผ่านเพื่อสร้างพนักงานระดับ Admin" > -->

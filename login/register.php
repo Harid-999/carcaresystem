@@ -3,6 +3,7 @@
     $resgisterCustomer = new DB_con(); 
 
     if(isset($_POST['insert'])){ 
+
         $email = $_POST['email'];
         $password = $_POST['password'];
         $repeat = $_POST['repeat'];
@@ -10,20 +11,29 @@
         $tel  = $_POST['tel'];
         $permission = "3";
         $check = strcmp($password, $repeat);
-
-        $sql = $resgisterCustomer->resgisterCustomer($email, $password, $name, $tel, $permission);
-        if($sql && $check == 0){
-            echo "<script>alert('สมัครสมาชิกสำเร็จ ^^');</script>";
-            echo "<script>window.location.href='customer.php?email=$email&password=$password&name=$name&tel=$tel'</script>";
-         }
-        // else if($check != 0 ){
-        //     echo "<script>alert('ข้อมูลรหัสผ่านไม่ตรงกัน กรุณาลองใหม่อีกครั้ง');</script>";
-        //     echo "<script>window.location.href='register.php'</script>";
-        // }
-        else{
-            echo "<script>alert('สมัครสมาชิกไม่สำเร็จ เนื่องจากข้อมูลรหัสผ่านไม่ตรงกัน กรุณาลองใหม่อีกครั้ง');</script>";
-            echo "<script>window.location.href='register.php'</script>";
+        
+        if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+          echo "<script>alert('รูปแบบ Email ไม่ถูกต้อง');</script>";
+          echo "<script>window.location.href='register.php'</script>";
         }
+        else{
+          if(strlen($password) < 8 || strlen($repeat) < 8){
+            echo "<script>alert('รหัสผ่านน้อยกว่า 8 ตัว');</script>";
+            echo "<script>window.location.href='register.php'</script>";
+          }
+          else{
+            $sql = $resgisterCustomer->resgisterCustomer($email, $password, $name, $tel, $permission);
+            if($sql && $check == 0){
+                echo "<script>alert('สมัครสมาชิกสำเร็จ ^^');</script>";
+                echo "<script>window.location.href='customer.php?email=$email&password=$password&name=$name&tel=$tel'</script>";
+             }
+            else{
+                echo "<script>alert('สมัครสมาชิกไม่สำเร็จ เนื่องจากข้อมูลรหัสผ่านไม่ตรงกัน กรุณาลองใหม่อีกครั้ง');</script>";
+                echo "<script>window.location.href='register.php'</script>";
+            }
+          }
+        }      
+        
     }
  ?>
 
@@ -106,7 +116,7 @@ a {
     <hr>
 
     <label for="email"><b>Email</b></label>
-    <input type="text" placeholder="Enter Email" name="email" id="email" required>
+    <input type="text" placeholder="Enter Email" name="email" id="email" onblur='check_email(this)' required>
 
     <label for="psw"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="password" id="myInput" required>
@@ -133,6 +143,7 @@ a {
   </div>
 </form>
 
+
 <script>
   function myFunction() {
     var x = document.getElementById("myInput");
@@ -145,6 +156,14 @@ a {
       y.type = "password";
     }
   }
+</script>
+<script type='text/javascript'>
+function check_email(elm){
+    var regex_email=/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*\@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.([a-zA-Z]){2,4})$/
+    if(!elm.value.match(regex_email)){
+        alert('รูปแบบ email ไม่ถูกต้อง');
+    }
+}
 </script>
 
 </body>

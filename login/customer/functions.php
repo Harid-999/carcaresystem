@@ -26,31 +26,35 @@ class DB_con{
 
     public function fetchBookingNew($user_id){
         $resultSelectBookingNew = mysqli_query($this->dbcon, 
-        "SELECT booking_id,
+        "SELECT booking.booking_id,
         CASE
-            WHEN time_id = 1 THEN 'คิวที่ 1 เวลา 9.00 - 10.30'
-            WHEN time_id = 2 THEN 'คิวที่ 2 เวลา 10.30 - 12.00'
-            WHEN time_id = 3 THEN 'คิวที่ 3 เวลา 13.00 - 14.30'
-            WHEN time_id = 4 THEN 'คิวที่ 4 เวลา 14.30 - 16.00'
-            WHEN time_id = 5 THEN 'คิวที่ 5 เวลา 16.00 - 17.30'
+            WHEN booking.time_id = 1 THEN 'คิวที่ 1 เวลา 9.00 - 10.30'
+            WHEN booking.time_id = 2 THEN 'คิวที่ 2 เวลา 10.30 - 12.00'
+            WHEN booking.time_id = 3 THEN 'คิวที่ 3 เวลา 13.00 - 14.30'
+            WHEN booking.time_id = 4 THEN 'คิวที่ 4 เวลา 14.30 - 16.00'
+            WHEN booking.time_id = 5 THEN 'คิวที่ 5 เวลา 16.00 - 17.30'
             ELSE 'ยังไม่ระบุคิวที่รับบริการ'
         END as time_id,
         CASE
-            WHEN package_id = 1 THEN 'รถเก๋ง ราคา 200 บาท'
-            WHEN package_id = 2 THEN 'รถกระบะ 2 ประตู ราคา 220 บาท'
-            WHEN package_id = 3 THEN 'รถกระบะ 4 ประตู ราคา 250 บาท'
-            WHEN package_id = 4 THEN 'รถตู้ ราคา 300 บาท'
+            WHEN booking.package_id = 1 THEN 'รถเก๋ง ราคา 200 บาท'
+            WHEN booking.package_id = 2 THEN 'รถกระบะ 2 ประตู ราคา 220 บาท'
+            WHEN booking.package_id = 3 THEN 'รถกระบะ 4 ประตู ราคา 250 บาท'
+            WHEN booking.package_id = 4 THEN 'รถตู้ ราคา 300 บาท'
             ELSE 'ยังไม่ระบุชนิดรถที่รับบริการ'
         END as CarType, 
-        booking_date as DateWash,
+        booking.booking_date as DateWash,
         CASE
-            WHEN booking_status = 0 THEN 'รอตรวจสอบ'
-            WHEN booking_status = 1 THEN 'ยืนยัน'
-            WHEN booking_status = 2 THEN 'กำลังเข้ารับบริการ'
-            WHEN booking_status = 3 THEN 'สำเร็จ'
+            WHEN booking.booking_status = 0 THEN 'รอตรวจสอบ'
+            WHEN booking.booking_status = 1 THEN 'ยืนยัน'
+            WHEN booking.booking_status = 2 THEN 'กำลังเข้ารับบริการ'
+            WHEN booking.booking_status = 3 THEN 'สำเร็จ'
             ELSE 'ยังไม่ระบุชนิดรถที่รับบริการ'
         END as booking_status
+        ,package.package_name as packageName
+        ,package.package_price as packagePrice
         FROM booking
+        left join package
+        on package.package_id = booking.package_id
         where user_id = $user_id
         and IsCancel != '1' and IsDelete != '1' ");
         return $resultSelectBookingNew ;
@@ -66,7 +70,10 @@ class DB_con{
 
     // select ก่อน update    :   fetch_update_booking
     public function fetch_update_booking($user_id, $booking_id){
-        $resultfetchBooking= mysqli_query($this->dbcon, "SELECT * FROM booking where user_id = $user_id and booking_id = $booking_id");
+        $resultfetchBooking= mysqli_query($this->dbcon, "SELECT *,package.package_name as packName  FROM booking
+        left join package 
+        on package.package_id = booking.package_id
+        where user_id = $user_id and booking_id = $booking_id");
         return $resultfetchBooking;
     }
     // ------------ Update Booking ------------
@@ -117,7 +124,14 @@ class DB_con{
         return $resultCheckMax;
     }
 
-
+    public function Package(){
+        $resultPackage = mysqli_query($this->dbcon,"select * from package");
+        return $resultPackage;
+    }
+    public function UpsPackage($packageID){
+        $resultPackage = mysqli_query($this->dbcon,"select * from package where package_id != '$packageID'");
+        return $resultPackage;
+    }
 
 }
 

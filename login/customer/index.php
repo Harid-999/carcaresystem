@@ -63,16 +63,11 @@ $menu = "Customer";
                   $i++
               ?>
                 <tr>
-                  <!-- <td><?php echo $row['time_id']; ?></td>
-                  <td><?php echo $row['package_id']; ?></td>
-                  <td><?php echo $row['booking_date']; ?></td>
-                  <td><?php echo $row['booking_status']; ?></td> -->
-
-                  <!-- <td><?php echo $row['booking_id']; ?></td> -->
+                  
                   <td align="center"><?php echo $i ?></td>
                   <td align="center"><?php echo $row['DateWash']; ?></td>
                   <td><?php echo $row['time_id']; ?></td>
-                  <td><?php echo $row['CarType']; ?></td>
+                  <td><?php echo $row['packageName'].' '.$row['packagePrice'].' บาท' ?></td>
                   <td align="center"><?php echo $row['booking_status']; ?></td>
              
                   <td align="center">

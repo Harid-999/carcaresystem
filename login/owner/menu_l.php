@@ -64,7 +64,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="cal2.php" class="nav-link <?php if($menu=="Cal"){echo "active";} ?> ">
+            <a href="calculate.php" class="nav-link <?php if($menu=="Cal"){echo "active";} ?> ">
               <i class="nav-icon fas fa-money-check-alt"></i>
               <p>รายรับประจำ</p>
             </a>

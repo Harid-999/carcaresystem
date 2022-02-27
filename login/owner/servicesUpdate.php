@@ -126,13 +126,28 @@ $UpdateService = new DB_con();
                     <!-- <input type="text" class="form-control" id="inputError" name="tel" placeholder="Enter ..." required> -->
                     <div class="col-4">
                     <select name="package_id" id="" class="form-control select2">
-                        <!-- <option value="" selected>-- ปรับแพ็กเกจบริการ --</option> -->
-
-                        <option value="1"<?php if($row['package_id'] == '1') { echo 'selected'; }?>>รถเก๋ง 200 บาท</option>
-                        <option value="2"<?php if($row['package_id'] == '2') { echo 'selected'; }?>>รถกระบะ 2 ประตู 220 บาท</option>
-                        <option value="3"<?php if($row['package_id'] == '3') { echo 'selected'; }?>>รถกระบะ 4 ประตู 250 บาท</option>
-                        <option value="4"<?php if($row['package_id'] == '4') { echo 'selected'; }?>>รถตู้ 300 บาท</option>
-                    </select>
+                    <?php
+                      echo '<option value="'.$row['package_id'].'" selected="selected">'.$row['package_name'].'</option>';
+                      if ($row['package_id'] == 'N') echo '<option value="Y">Y</option>';
+                        
+                      else 
+                      
+                      $Package = $update->UpsPackage($row['package_id']);
+                      $packageName = array();
+                      $packageID = array();
+                      $i=0;
+                      while($row=mysqli_fetch_array($Package)){
+                        $packageID[$i] =  $row['package_id'];
+                        $packageName[$i] = $row['package_name'];
+                        $i++;
+                      }
+                      echo '<option value="'.$packageID[0].'">'.$packageName[0].'</option>';
+                      echo '<option value="'.$packageID[1].'">'.$packageName[1].'</option>';
+                      echo '<option value="'.$packageID[2].'">'.$packageName[2].'</option>';
+                    
+                      echo '</select>';
+                    ?> 
+                    <!-- </select>  -->
                     </div>
                   </div>
                   <!--END 3 -->
@@ -142,7 +157,7 @@ $UpdateService = new DB_con();
                   <!-- <input type="text" class="form-control" id="textAdmin" style="display:none" name ="mb" placeholder="ยืนยันรหัสผ่านเพื่อสร้างพนักงานระดับ Admin" > -->
               <?php } ?>
               <br>
-              <br>
+              <br><br><br>
               <button type="submit" class="btn btn-warning form-control" name="EnterUpdate">บันทึกแก้ไขข้อมูล</button>
               <br>
               <br>

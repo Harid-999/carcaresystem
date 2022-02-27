@@ -1,12 +1,18 @@
 <?php
-    // define("DB_SERVER", "localhost");
-    // define("DB_USER", "root");
-    // define("DB_PASS", "");
-    // define("DB_NAME", "mbcarcare");
-    define("DB_SERVER", "dns.komkawila.com");
-    define("DB_USER", "carcaresystem");
-    define("DB_PASS", "P@ssw0rd");
-    define("DB_NAME", "mbCarcare");
+    define("DB_SERVER", "localhost");
+    define("DB_USER", "root");
+    define("DB_PASS", "");
+    define("DB_NAME", "mbcarcare");
+
+    // define("DB_SERVER", "http://dns.komkawila.com");
+    // define("DB_USER", "carcaresystem");
+    // define("DB_PASS", "P@ssw0rd");
+    // define("DB_NAME", "mbCarcare");
+
+    // define("DB_SERVER", "dns.komkawila.com");
+    // define("DB_USER", "carcaresystem");
+    // define("DB_PASS", "P@ssw0rd");
+    // define("DB_NAME", "mbCarcare");
 
 class DB_con{
     function __construct(){ 
@@ -98,16 +104,6 @@ class DB_con{
     // fetchBooking..
     public function fetchBooking(){
         $resultSelectBooking= mysqli_query($this->dbcon, 
-        // "SELECT *, 
-        // case
-        //     when booking_status = 0  then 'รออนุมัติ'
-        //     when booking_status = 1  then 'ยืนยันแล้ว'
-        //     when booking_status = 2  then 'กำลังเข้ารับบริการ'
-        //     when booking_status = 3  then 'สำเร็จ'
-        //     else 'ผิดพลาด'
-        // end as booking_status2
-        
-        //  FROM booking 
         "select b.booking_id, u.name, u.tel,  
         b.booking_date, b.IsDelete, b.IsCancel,
         case
@@ -124,17 +120,15 @@ class DB_con{
             when b.booking_status = 2  then 'กำลังเข้ารับบริการ'
             when b.booking_status = 3  then 'สำเร็จ'
             else ''
-        end as booking_status, 
-        case
-            when b.package_id = 1  then 'รถเก๋ง 200 บาท'
-            when b.package_id = 2  then 'รถกระบะ 2 ประตู 220 บาท'
-            when b.package_id = 3  then 'รถกระบะ 4 ประตู 250 บาท'
-            when b.package_id = 4  then 'รถตู้ 300 บาท'
-            else ''
-        end as package_id
+        end as booking_status 
+        ,package.package_id as package_id
+        ,package.package_name as packageName
+        ,package.package_price as packagePrice
         from booking b
         LEFT join users u 
-        on u.id = b.user_id 
+        on u.id = b.user_id
+        left join package
+        on package.package_id = b.package_id
         where 
         b.IsDelete != '1' 
         and
@@ -144,7 +138,11 @@ class DB_con{
 
     // fetch_update_booking..
     public function fetch_update_booking($booking_id){
-        $resultUpdateBooking= mysqli_query($this->dbcon, "SELECT * from booking where booking_id = '$booking_id' ");
+        $resultUpdateBooking= mysqli_query($this->dbcon, "SELECT * from booking b
+        
+        left join package
+        on package.package_id = b.package_id
+        where booking_id = '$booking_id' ");
         
         return $resultUpdateBooking;
     }
@@ -186,39 +184,80 @@ class DB_con{
         return $resultDay;
     }
 
-    public function calMonth(){
-        $resultMonth = mysqli_query($this->dbcon, 
-        "select date_format(b.booking_date, '%M'), sum(P.package_price)
-        from booking B
-        join package P
-        on P.package_id = B.package_id
-        where 
-            B.booking_status = 3 and B.IsDelete !=1 and B.IsCancel != 1
-        group by date_format(b.booking_date, '%M') ");
-        return $resultMonth;
-    }
-
-    public function calYear(){
-        $resultYear = mysqli_query($this->dbcon, 
-        "select date_format(b.booking_date, '%M %Y'), sum(P.package_price)
-        from booking B
-        join package P
-        on P.package_id = B.package_id
-        where 
-            B.booking_status = 3 and B.IsDelete !=1 and B.IsCancel != 1
-            group by year(b.booking_date), month(b.booking_date) ");
-        return $resultYear;
-    }
     public function calMonthPerYear(){
-        $resultMonthPerYear = mysqli_query($this->dbcon, 
-        "select date_format(b.booking_date, '%M %Y') as monthPerYear, sum(P.package_price) as income
-        FROM booking B
-        JOIN package P
-        ON P.package_id = B.package_id
+        $resultMonthPerYearNew = mysqli_query($this->dbcon, 
+        "select date_format(b.booking_date, '%M %Y') as  MonthPerYear, sum(P.package_price) as income
+        from booking B
+        join package P
+        on P.package_id = B.package_id
         where 
             B.booking_status = 3 and B.IsDelete !=1 and B.IsCancel != 1
         group by year(b.booking_date), month(b.booking_date) ");
-    return $resultMonthPerYear;
+        return $resultMonthPerYearNew;
+    }
+
+    // public function calMonth(){
+    //     $resultMonth = mysqli_query($this->dbcon, 
+    //     "select date_format(b.booking_date, '%M')as tests, sum(P.package_price)as price
+    //     from booking B
+    //     join package P
+    //     on P.package_id = B.package_id
+    //     where 
+    //         B.booking_status = 3 and B.IsDelete !=1 and B.IsCancel != 1
+    //     group by date_format(b.booking_date, '%M') ");
+    //     return $resultMonth;
+    // }
+
+    // public function calYear(){
+    //     $resultYear = mysqli_query($this->dbcon, 
+    //     "select date_format(b.booking_date, '%M %Y'), sum(P.package_price)
+    //     from booking B
+    //     join package P
+    //     on P.package_id = B.package_id
+    //     where 
+    //         B.booking_status = 3 and B.IsDelete !=1 and B.IsCancel != 1
+    //         group by year(b.booking_date), month(b.booking_date) ");
+    //     return $resultYear;
+    // }
+    
+    /* Modify 02/01/2565 */ 
+
+   // fetch_update_package
+   public function fetch_update_package($package_id){
+    $result_update_package = mysqli_query($this->dbcon, "SELECT * from package where package_id = '$package_id' ");
+    return $result_update_package;
+    
+    }
+    // UpdatePackage
+    public function UpdatePackage($package_id, $package_name, $package_price){
+        $rusultUpdatePackage = mysqli_query($this->dbcon, "UPDATE package SET 
+        package_name = '$package_name',
+        package_price ='$package_price'
+        WHERE package_id = '$package_id' ");
+        return $rusultUpdatePackage;
+    }
+    /*
+
+    SELECT 
+    users.name, users.tel
+    ,booking.booking_date, 
+    time_tb.time_name, package.package_name, package.package_price
+    ,booking.booking_status
+    FROM booking
+    INNER JOIN users
+    ON users.id = booking.user_id
+    INNER JOIN time_tb
+    ON time_tb.time_id = booking.time_id
+    INNER JOIN package
+    ON package.package_id = booking.package_id
+
+    where booking.booking_id = '1'
+        
+    
+    */ 
+    public function UpsPackage($packageID){
+        $resultPackage = mysqli_query($this->dbcon,"select * from package where package_id != '$packageID'");
+        return $resultPackage;
     }
 }
 
